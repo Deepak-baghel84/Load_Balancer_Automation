@@ -1,0 +1,26 @@
+test_case:
+  name: disable_virtual_service
+
+  target:
+    vs_name: backend-vs-t1r_1000-1
+
+  workflow:
+    pre_fetch:
+      enabled: true
+      resources:
+        - tenants
+        - virtual_services
+        - service_engines
+
+    pre_validation:
+      check_enabled: true
+      expected_state: true
+
+    action:
+      method: PUT
+      payload:
+        enabled: false
+
+    post_validation:
+      enabled: true
+      expected_state: false

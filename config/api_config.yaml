@@ -1,0 +1,11 @@
+# Base URL for the mock Avi Controller API
+base_url: https://semantic-brandea-banao-dc049ed0.koyeb.app
+
+# API endpoints
+endpoints:
+  register: /register
+  login: /login1
+
+  tenants: /api/tenant
+  virtual_services: /api/virtualservice
+  service_engines: /api/serviceengine
