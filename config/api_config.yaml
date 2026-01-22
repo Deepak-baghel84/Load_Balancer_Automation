@@ -4,7 +4,7 @@ base_url: https://semantic-brandea-banao-dc049ed0.koyeb.app
 # API endpoints
 endpoints:
   register: /register
-  login: /login1
+  login: /login
 
   tenants: /api/tenant
   virtual_services: /api/virtualservice

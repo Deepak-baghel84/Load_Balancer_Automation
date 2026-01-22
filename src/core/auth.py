@@ -1,5 +1,7 @@
 import requests
+from utils.logger import CustomLogger
 
+logger = CustomLogger().get_logger(__file__)
 
 class AuthClient:
     """
@@ -9,6 +11,7 @@ class AuthClient:
 
     def __init__(self, base_url: str, credentials: dict):
         self.base_url = base_url
+        logger.info("Initializing AuthClient with base URL: {}".format(base_url))
         self.username = credentials["credentials"]["username"]
         self.password = credentials["credentials"]["password"]
         self.token = None
@@ -18,6 +21,7 @@ class AuthClient:
         Registers the user with the mock API.
         Safe to call multiple times (API may ignore duplicates).
         """
+        logger.info("Registering user with username: {}".format(self.username))
         url = f"{self.base_url}{register_endpoint}"
         payload = {
             "username": self.username,
@@ -32,7 +36,7 @@ class AuthClient:
                 f"Registration failed: {response.status_code} - {response.text}"
             )
 
-        print("INFO: Registration step completed")
+        logger.info("Registration step completed")
 
     def login(self, login_endpoint: str) -> str:
         """
@@ -41,6 +45,7 @@ class AuthClient:
         Returns:
             str: Bearer token
         """
+        logger.info("Logging in with username: {}".format(self.username))
         url = f"{self.base_url}{login_endpoint}"
 
         response = requests.post(
@@ -59,7 +64,7 @@ class AuthClient:
             raise Exception("Login response does not contain token")
 
         self.token = data["token"]
-        print("INFO: Login successful, token acquired")
+        logger.info("Login successful, token acquired")
 
         return self.token
 
@@ -67,6 +72,7 @@ class AuthClient:
         """
         Returns Authorization header for authenticated API calls.
         """
+        logger.info("Getting auth header")
         if not self.token:
             raise Exception("Token not available. Please login first.")
 
@@ -75,13 +81,43 @@ class AuthClient:
         }
        
 
-# Example usage:
-credentials = { "credentials": {"username": "user1", "password": "pass123"} }
-auth_client = AuthClient("https://mockapi.example.com", credentials)
-auth_client.register("/register")
-token = auth_client.login("/login")
-auth_header = auth_client.get_auth_header()
-print("Auth Header:", auth_header)
+
+if __name__ == "__main__":
+    import sys
+    import os
+    
+    # Add project root to sys.path to allow imports if run directly
+    # Assuming script is in src/core, so root is ../../
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(current_dir, "../../"))
+    sys.path.append(project_root)
+
+    from src.core.yaml_loader import YamlLoader
+
+    # Load configurations
+    try:
+        api_config = YamlLoader.load_yaml(os.path.join(project_root, "config/api_config.yaml"))
+        credentials = YamlLoader.load_yaml(os.path.join(project_root, "config/credentials.yaml"))
+        
+        base_url = api_config["base_url"]
+        register_endpoint = api_config["endpoints"]["register"]
+        login_endpoint = api_config["endpoints"]["login"]
+
+        logger.info(f"Connecting to {base_url}...")
+
+        auth_client = AuthClient(base_url, credentials)
+        
+        logger.info("Attempting registration...")
+        auth_client.register(register_endpoint)
+        
+        logger.info("Attempting login...")
+        token = auth_client.login(login_endpoint)
+        
+        auth_header = auth_client.get_auth_header()
+        logger.info("Auth Header:", auth_header)
+
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
 
 
     
