@@ -36,3 +36,7 @@ class YamlLoader:
             raise ValueError(f"YAML file is empty or invalid: {file_path}")
 
         return data
+
+# Example usage:
+confg = YamlLoader.load_yaml("config/api_config.yaml")
+print(confg)

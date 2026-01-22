@@ -73,3 +73,15 @@ class AuthClient:
         return {
             "Authorization": f"Bearer {self.token}"
         }
+       
+
+# Example usage:
+credentials = { "credentials": {"username": "user1", "password": "pass123"} }
+auth_client = AuthClient("https://mockapi.example.com", credentials)
+auth_client.register("/register")
+token = auth_client.login("/login")
+auth_header = auth_client.get_auth_header()
+print("Auth Header:", auth_header)
+
+
+    
