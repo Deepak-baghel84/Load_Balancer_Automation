@@ -1,0 +1,3 @@
+{"timestamp": "2026-01-23T16:34:44.804624Z", "level": "info", "event": "Starting Avi Test Automation Framework"}
+{"timestamp": "2026-01-23T16:34:44.809341Z", "level": "info", "event": "Initializing AuthClient with base URL: https://semantic-brandea-banao-dc049ed0.koyeb.app"}
+{"timestamp": "2026-01-23T16:34:44.809341Z", "level": "info", "event": "Registering user with username: test_user_avi"}
